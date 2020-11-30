@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -19,6 +20,20 @@ namespace Aoc.Runner
                 config.AddBranch("test", branch =>
                 {
                     branch.SetDescription("test cases defined in each day `Test` variable");
+                    branch.AddDelegate<DayArgs>("one", (context, args) =>
+                    {
+                        var arg = args.Day;
+                        try
+                        {
+                            arg = "Day" + int.Parse(arg).ToString();
+                        }
+                        catch
+                        {
+
+                        }
+                        TestOne(arg);
+                        return 0;
+                    }).WithDescription("Run day <day>");
                     branch.AddDelegate<EmptyCommandSettings>("last", (_) =>
                     {
                         TestLast();
@@ -34,6 +49,20 @@ namespace Aoc.Runner
                 config.AddBranch("run", branch =>
                 {
                     branch.SetDescription("run on day inputs");
+                    branch.AddDelegate<DayArgs>("one", (context, args) =>
+                    {
+                        var arg = args.Day;
+                        try
+                        {
+                            arg = "Day" + int.Parse(arg).ToString();
+                        }
+                        catch
+                        {
+
+                        }
+                        RunOne(arg);
+                        return 0;
+                    });
                     branch.AddDelegate<EmptyCommandSettings>("last", (_) =>
                     {
                         RunAll();
@@ -57,7 +86,7 @@ namespace Aoc.Runner
             return assembly.GetTypes()
                 .Where(type => typeof(Day).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                 .Select(type => (Day)Activator.CreateInstance(type)!)
-                .OrderBy(day => day.Number());
+                .OrderByDescending(day => day.Number());
         }
 
         public static bool TestDay(Day day)
@@ -108,10 +137,23 @@ namespace Aoc.Runner
         public static bool TestLast() =>
             !TestDay(Days().Last());
 
+        public static bool TestOne(string day) =>
+            !TestDay(Days().Where(dayClass => dayClass.GetType().Name == day).Last());
+
         public static bool RunAll() =>
             !Days().Where(day => RunDay(day)).Any();
 
         public static bool RunLast() =>
             !RunDay(Days().Last());
+
+        public static bool RunOne(string day) =>
+            !RunDay(Days().Where(dayClass => dayClass.GetType().Name == day).Last());
+
+        public sealed class DayArgs : CommandSettings
+        {
+            [CommandArgument(0, "<Day>")]
+            [Description("Day or as either the number or the full name")]
+            public string Day { get; set; } = "unset";
+        }
     }
 }
