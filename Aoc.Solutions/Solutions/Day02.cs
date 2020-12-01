@@ -6,14 +6,6 @@ namespace Aoc.Solutions
     // 2019 day 02
     public class Day02 : Day
     {
-        public Day02()
-        {
-            Tests = new()
-            {
-                new("1", "1,0,0,0,99", "2,0,0,0,99", SolveA)
-            };
-        }
-
         public override string SolveA()
         {
             var input = GetInput();
@@ -48,6 +40,13 @@ namespace Aoc.Solutions
             }
 
             return string.Join(", ", op.Select(o => o.ToString()));
+        }
+        public Day02()
+        {
+            Tests = new()
+            {
+                new("1", "1,0,0,0,99", "2,0,0,0,99", i => SolveA(i))
+            };
         }
     }
 }

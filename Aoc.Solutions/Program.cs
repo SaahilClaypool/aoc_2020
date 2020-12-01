@@ -2,4 +2,4 @@
 using Aoc.Runner;
 using System.Linq;
 
-AocRunner.CreateApp().Run(args);
+AocRunner.Run(args);
