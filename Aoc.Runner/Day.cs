@@ -9,7 +9,14 @@ namespace Aoc.Runner
         public virtual List<Test> Tests { get; set; } = new();
         public virtual uint Number()
         {
-            return uint.Parse(NumberString());
+            try
+            {
+                return uint.Parse(NumberString());
+            }
+            catch
+            {
+                return 999;
+            }
         }
         public virtual string NumberString()
         {

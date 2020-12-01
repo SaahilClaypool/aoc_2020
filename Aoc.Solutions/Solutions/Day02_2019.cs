@@ -4,7 +4,7 @@ using System.Linq;
 namespace Aoc.Solutions
 {
     // 2019 day 02
-    public class Day02 : Day
+    public class Day02_2019 : Day
     {
         public override string SolveA()
         {
@@ -41,7 +41,7 @@ namespace Aoc.Solutions
 
             return string.Join(", ", op.Select(o => o.ToString()));
         }
-        public Day02()
+        public Day02_2019()
         {
             Tests = new()
             {

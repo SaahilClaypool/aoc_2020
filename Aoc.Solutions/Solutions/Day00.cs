@@ -13,12 +13,12 @@ namespace Aoc.Solutions
             };
 
         }
-        public override string SolveA(string Input)
+        public override string SolveA(string input)
         {
             return "SolveA";
         }
 
-        public override string SolveB(string Input)
+        public override string SolveB(string input)
         {
             return "SolveB";
         }

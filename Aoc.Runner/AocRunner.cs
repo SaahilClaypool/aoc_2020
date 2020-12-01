@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -18,11 +19,13 @@ namespace Aoc.Runner
             return assembly.GetTypes()
                 .Where(type => typeof(Day).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                 .Select(type => (Day)Activator.CreateInstance(type)!)
-                .OrderByDescending(day => day.Number());
+                .OrderBy(day => day.Number() > 25 ? -1 : (int)day.Number())
+                .ToList();
         }
 
         public static bool TestDay(Day day)
         {
+            Console.WriteLine($"Day {day.NumberString()}");
             var failedTests = day.Tests.Where(test =>
             {
                 var failed = !test.Run();
@@ -41,10 +44,15 @@ namespace Aoc.Runner
 
         public static bool RunDay(Day day)
         {
+            Console.WriteLine($"Day {day.NumberString()}");
             try
             {
-                var a = day.SolveA();
-                Console.WriteLine($"Part A: {a}");
+                var a = "";
+                var elapsed = TimeIt(() =>
+                {
+                    a = day.SolveA();
+                });
+                Console.WriteLine($"Part A ({elapsed.Milliseconds + elapsed.Seconds * 100}ms): {a}");
             }
             catch (NotImplementedException)
             {
@@ -53,8 +61,13 @@ namespace Aoc.Runner
 
             try
             {
-                var b = day.SolveB();
-                Console.WriteLine($"Part B: {b}");
+                var b = "";
+                var elapsed = TimeIt(() =>
+                {
+                    b = day.SolveB();
+                });
+                day.SolveB();
+                Console.WriteLine($"Part B ({elapsed.Milliseconds + elapsed.Seconds * 100}ms): {b}");
             }
             catch (NotImplementedException)
             {
@@ -83,6 +96,14 @@ namespace Aoc.Runner
 
         private static Day Find(string day) =>
             Days().Where(dayClass => dayClass.GetType().Name == day).LastOrDefault() ?? throw new NoDayFound();
+
+        static TimeSpan TimeIt(Action blockingAction)
+        {
+            Stopwatch stopWatch = System.Diagnostics.Stopwatch.StartNew();
+            blockingAction();
+            stopWatch.Stop();
+            return stopWatch.Elapsed;
+        }
     }
     public class NoDayFound : Exception { }
 }
