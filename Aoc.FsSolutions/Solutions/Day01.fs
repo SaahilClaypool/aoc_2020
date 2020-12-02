@@ -1,4 +1,4 @@
-module Aoc.Solutions
+module Aoc.Solutions.Day01
 
 open Aoc.Runner
 open System.Collections
