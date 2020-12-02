@@ -6,19 +6,7 @@ namespace Aoc.Solutions
 {
     public class Day01 : Day
     {
-        public Day01()
-        {
-            Tests = new()
-            {
-                new("1", @"1721
-979
-366
-299
-675
-1456", "514579", (input) => SolveA(input))
-            };
 
-        }
         public override string SolveA(string input)
         {
             var target = 2020;
@@ -65,5 +53,19 @@ namespace Aoc.Solutions
                         yield return (items[i], items[j], items[k]);
                     }
         }
+        public Day01()
+        {
+            Tests = new()
+            {
+                new("1", @"1721
+                                979
+                                366
+                                299
+                                675
+                                1456", "514579", (input) => SolveA(input))
+            };
+
+        }
     }
+
 }

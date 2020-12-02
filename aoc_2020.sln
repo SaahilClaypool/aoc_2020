@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aoc.Runner", "Aoc.Runner\Ao
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aoc.Solutions", "Aoc.Solutions\Aoc.Solutions.csproj", "{EBE7B4AF-F2D4-4259-8F83-39BF8DD3F8CD}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aoc.FsSolutions", "Aoc.FsSolutions\Aoc.FsSolutions.fsproj", "{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{EBE7B4AF-F2D4-4259-8F83-39BF8DD3F8CD}.Release|x64.Build.0 = Release|Any CPU
 		{EBE7B4AF-F2D4-4259-8F83-39BF8DD3F8CD}.Release|x86.ActiveCfg = Release|Any CPU
 		{EBE7B4AF-F2D4-4259-8F83-39BF8DD3F8CD}.Release|x86.Build.0 = Release|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Debug|x64.Build.0 = Debug|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Debug|x86.Build.0 = Debug|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Release|x64.ActiveCfg = Release|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Release|x64.Build.0 = Release|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Release|x86.ActiveCfg = Release|Any CPU
+		{0FDBCE1D-64F2-4E18-9889-F2EB8B6DE8E1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

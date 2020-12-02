@@ -1,5 +1,5 @@
-using Aoc.Runner;
 using System.Linq;
+using Aoc.Runner;
 
 namespace Aoc.Solutions
 {
@@ -43,10 +43,6 @@ namespace Aoc.Solutions
         }
         public Day02_2019()
         {
-            Tests = new()
-            {
-                new("1", "1,0,0,0,99", "2,0,0,0,99", i => SolveA(i))
-            };
         }
     }
 }

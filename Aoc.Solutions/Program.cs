@@ -1,6 +1,5 @@
 ﻿using System;
-using Aoc.Runner;
 using System.Linq;
+using Aoc.Runner;
 
-System.Console.WriteLine(string.Join(",", AocRunner.Days().Select(day => day.Number())));
 AocRunner.Run(args);
