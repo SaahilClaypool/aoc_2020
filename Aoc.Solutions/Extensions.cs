@@ -5,10 +5,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Extensions
-{
-    public static class CommonExtensions
-    {
+namespace Extensions {
+    public static class CommonExtensions {
         /// <summary>
         /// Print any object using the system json
         /// NOTE: this might get caught in infinite loops (look how to fix...)
@@ -16,8 +14,7 @@ namespace Extensions
         /// <param name="self"></param>
         /// <param name="pretty">print multi line json</param>
         /// <returns></returns>
-        public static string ToJson(this object self, bool pretty = false)
-        {
+        public static string ToJson(this object self, bool pretty = false) {
             return JsonSerializer.Serialize(self, new JsonSerializerOptions { WriteIndented = pretty, ReferenceHandler = ReferenceHandler.Preserve });
         }
 
@@ -28,8 +25,7 @@ namespace Extensions
         /// </summary>
         /// <param name="self">extended object</param>
         /// <param name="pretty">Multi line json</param>
-        public static void Dbg(this object self, bool pretty = false)
-        {
+        public static void Dbg(this object self, bool pretty = false) {
             var CallStack = new StackFrame(1, true);
             var fileName = System.IO.Path.GetFileName(CallStack.GetFileName());
             var lineNum = CallStack.GetFileLineNumber();
@@ -39,8 +35,7 @@ namespace Extensions
             Console.WriteLine($"\nDBG: {fileName}:{lineNum} : {type} - {representation}\n");
         }
 
-        public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source)
-        {
+        public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source) {
             return source.Select((item, index) => (item, index));
         }
     }
