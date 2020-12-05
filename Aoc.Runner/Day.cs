@@ -30,6 +30,12 @@ namespace Aoc.Runner
             return File.ReadAllText(path);
         }
 
+        public virtual string GetInput(string suffix)
+        {
+            var path = Path.Combine("Inputs", $"Day_{NumberString()}_{suffix}.txt");
+            return File.ReadAllText(path);
+        }
+
         public virtual string SolveA() => SolveA(GetInput());
         public virtual string SolveA(string Input) => throw new NotImplementedException();
         public virtual string SolveB() => SolveB(GetInput());

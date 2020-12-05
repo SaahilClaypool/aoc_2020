@@ -37,7 +37,7 @@ namespace Aoc.Runner
             }).ToList();
             foreach (var test in failedTests)
             {
-                Console.Write($"Test {test.Name} Failed:\n\tExpected: {test.ExpectedOutput}\n\tReceived: {test.Output}");
+                Console.WriteLine($"Test {test.Name} Failed:\n\tExpected: {test.ExpectedOutput}\n\tReceived: {test.Output}");
             }
             return !failedTests.Any();
         }
