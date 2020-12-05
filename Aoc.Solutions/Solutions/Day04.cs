@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 using Aoc.Runner;
 
@@ -71,11 +72,7 @@ namespace Aoc.Solutions {
             },
             {
                 "hcl",
-                hcl => {
-                    return hcl.StartsWith("#") &&
-                    hcl.Length == 7 &&
-                    hcl[1..].All(c => "0123456789abcdef".IndexOf(c) >= 0);
-                }
+                hcl => new Regex(@"^#[0-9a-f]{6}").IsMatch(hcl)
             },
             {
                 "ecl",
