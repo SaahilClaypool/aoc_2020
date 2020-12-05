@@ -38,5 +38,7 @@ namespace Extensions {
         public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source) {
             return source.Select((item, index) => (item, index));
         }
+
+        public static Output Then<Input, Output>(this Input input, Func<Input, Output> f) => f.Invoke(input);
     }
 }
