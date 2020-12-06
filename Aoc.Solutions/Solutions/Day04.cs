@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Extensions;
 
 using Aoc.Runner;
 
@@ -17,24 +18,8 @@ namespace Aoc.Solutions {
             "pid",
         };
 
-        public static IEnumerable<IEnumerable<T>> SplitAt<T>(IEnumerable<T> items, Func<T, bool> splitter) {
-            List<T> block = new();
-            foreach (var item in items) {
-                if (splitter(item) && block.Count > 0) {
-                    yield return block;
-                    block = new();
-                }
-                else {
-                    block.Add(item);
-                }
-            }
-            if (block.Count > 0) {
-                yield return block;
-            }
-        }
-
         public static IEnumerable<Dictionary<string, string>> ParseInput(string input) {
-            var blocks = SplitAt(input.Split(null), line => line.Trim().Length == 0);
+            var blocks = CommonExtensions.SplitAt(input.Split(null), line => line.Trim().Length == 0);
             var passports = blocks.Select(block => {
                 var dict = new Dictionary<string, string>();
                 foreach (var value in block) {

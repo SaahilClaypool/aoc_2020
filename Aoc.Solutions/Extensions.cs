@@ -40,5 +40,22 @@ namespace Extensions {
         }
 
         public static Output Then<Input, Output>(this Input input, Func<Input, Output> f) => f.Invoke(input);
+
+        public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<T> items, Func<T, bool> splitter) {
+            List<T> block = new();
+            foreach (var item in items) {
+                if (splitter(item) && block.Count > 0) {
+                    yield return block;
+                    block = new();
+                }
+                else {
+                    block.Add(item);
+                }
+            }
+            if (block.Count > 0) {
+                yield return block;
+            }
+        }
+
     }
 }
