@@ -39,7 +39,7 @@ namespace Extensions {
             return source.Select((item, index) => (item, index));
         }
 
-        public static Output Then<Input, Output>(this Input input, Func<Input, Output> f) => f.Invoke(input);
+        public static Output Then<Input, Output>(this Input input, Func<Input, Output> f) => f(input);
 
         public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<T> items, Func<T, bool> splitter) {
             List<T> block = new();

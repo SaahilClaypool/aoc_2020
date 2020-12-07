@@ -85,7 +85,7 @@ namespace Aoc.Solutions {
             return passports.Where(passport =>
             RequiredFields.All(field => passport.ContainsKey(field)) &&
             passport.All(kvp => {
-                var res = Rules[kvp.Key].Invoke(kvp.Value);
+                var res = Rules[kvp.Key](kvp.Value);
                 if (!res) {
                     Console.WriteLine($"Failed: {kvp.Key} {kvp.Value}");
                 }
@@ -97,26 +97,26 @@ namespace Aoc.Solutions {
             Tests = new()
             {
                 new("byr valid", "2002", "True",
-                    (input) => Rules["byr"].Invoke(input).ToString()),
+                    (input) => Rules["byr"](input).ToString()),
                 new("byr invalid", "2003", "False",
-                    (input) => Rules["byr"].Invoke(input).ToString()),
+                    (input) => Rules["byr"](input).ToString()),
                 new("invalid", "invalid", "0", (input) => SolveB(GetInput(input))),
                 new("valid", "valid", "4", (input) => SolveB(GetInput(input))),
 
 
-                new("byr valid", "2002", "True", input => Rules["byr"].Invoke(input).ToString()),
-                new("byr invalid", "2003", "False", input => Rules["byr"].Invoke(input).ToString()),
-                new("hgt valid", "60in", "True", input => Rules["hgt"].Invoke(input).ToString()),
-                new("hgt valid", "190cm", "True", input => Rules["hgt"].Invoke(input).ToString()),
-                new("hgt invalid", "190in", "False", input => Rules["hgt"].Invoke(input).ToString()),
-                new("hgt invalid", "190", "False", input => Rules["hgt"].Invoke(input).ToString()),
-                new("hcl valid", "#123abc", "True", input => Rules["hcl"].Invoke(input).ToString()),
-                new("hcl invalid", "#123abz", "False", input => Rules["hcl"].Invoke(input).ToString()),
-                new("hcl invalid", "123abc", "False", input => Rules["hcl"].Invoke(input).ToString()),
-                new("ecl valid", "brn", "True", input => Rules["ecl"].Invoke(input).ToString()),
-                new("ecl invalid", "wat", "False", input => Rules["ecl"].Invoke(input).ToString()),
-                new("pid valid", "000000001", "True", input => Rules["pid"].Invoke(input).ToString()),
-                new("pid invalid", "0123456789", "False", input => Rules["pid"].Invoke(input).ToString()),
+                new("byr valid", "2002", "True", input => Rules["byr"](input).ToString()),
+                new("byr invalid", "2003", "False", input => Rules["byr"](input).ToString()),
+                new("hgt valid", "60in", "True", input => Rules["hgt"](input).ToString()),
+                new("hgt valid", "190cm", "True", input => Rules["hgt"](input).ToString()),
+                new("hgt invalid", "190in", "False", input => Rules["hgt"](input).ToString()),
+                new("hgt invalid", "190", "False", input => Rules["hgt"](input).ToString()),
+                new("hcl valid", "#123abc", "True", input => Rules["hcl"](input).ToString()),
+                new("hcl invalid", "#123abz", "False", input => Rules["hcl"](input).ToString()),
+                new("hcl invalid", "123abc", "False", input => Rules["hcl"](input).ToString()),
+                new("ecl valid", "brn", "True", input => Rules["ecl"](input).ToString()),
+                new("ecl invalid", "wat", "False", input => Rules["ecl"](input).ToString()),
+                new("pid valid", "000000001", "True", input => Rules["pid"](input).ToString()),
+                new("pid invalid", "0123456789", "False", input => Rules["pid"](input).ToString()),
 
             };
 
