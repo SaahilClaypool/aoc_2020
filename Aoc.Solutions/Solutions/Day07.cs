@@ -12,19 +12,11 @@ namespace Aoc.Solutions {
         record Rule(string Color, IEnumerable<RuleItem> Holds);
         static Rule ParseLine(string line) {
             var color = string.Join(" ", line.Split(" ").Take(2));
-            var rules = line.Split("contain").ToList()[1].Split(",");
-            var ruleExp = new Regex(@"(?:.*)(?<count>\d+) (?<rulecolor>.+) bag(?:.*)");
-            var ruleTuples = new List<RuleItem>();
-            try {
-                ruleTuples = rules.Select(rule => {
-                    var groups = ruleExp.Match(rule).Groups;
-                    System.Console.WriteLine(rule);
-                    var result = new RuleItem(Color: groups["rulecolor"].Value, Count: int.Parse(groups["count"].Value));
-                    System.Console.WriteLine(result);
-                    return result;
-                }).ToList();
-            }
-            catch { }
+            var ruleExp = new Regex(@"(?<count>\d+) (?<rulecolor>[a-z]+ [a-z]+) bag");
+            var ruleTuples = ruleExp
+                .Matches(line)
+                .Select(m => new RuleItem(m.Groups["rulecolor"].Value, int.Parse(m.Groups["count"].Value)))
+                .ToList();
             return new Rule(color, ruleTuples);
         }
 
@@ -33,37 +25,36 @@ namespace Aoc.Solutions {
         }
 
         static Dictionary<string, HashSet<string>> InvertTree(Dictionary<string, IEnumerable<RuleItem>> tree) {
-            var newTree = new Dictionary<string, HashSet<string>>();
+            var parentTree = new Dictionary<string, HashSet<string>>();
             foreach (var (Key, Value) in tree) {
                 foreach (var item in Value) {
-                    if (newTree.TryGetValue(item.Color, out var items)) {
+                    if (parentTree.TryGetValue(item.Color, out var items)) {
                         items.Add(Key);
                     }
                     else {
-                        newTree[item.Color] = new HashSet<string> {
+                        parentTree[item.Color] = new HashSet<string> {
                             Key
                         };
                     }
                 }
             }
-            return newTree;
+            return parentTree;
         }
 
         public override string SolveA(string input) {
             var rules = ToTree(input.Split("\n").Select(ParseLine));
-            var inverted = InvertTree(rules);
-            var searched = new HashSet<string>();
-            var active = new HashSet<string>() { "shiny gold" };
-            while (active.Any()) {
-                var node = active.First();
-                active.Remove(node);
-                searched.Add(node);
-                if (inverted.ContainsKey(node))
-                    foreach (var parent in inverted[node].Where(node => !searched.Contains(node)))
-                        active.Add(parent);
+            var parents = InvertTree(rules);
+            IEnumerable<string> parentsOf(string bag) {
+                if (parents.ContainsKey(bag)) {
+                    foreach (var parent in parents[bag]) {
+                        yield return parent;
+                        foreach (var parentParent in parentsOf(parent)) {
+                            yield return parentParent;
+                        }
+                    }
+                }
             }
-
-            return (searched.Count - 1).ToString();
+            return parentsOf("shiny gold").ToHashSet().Count.ToString();
         }
 
         static int CountForRule(Dictionary<string, IEnumerable<RuleItem>> rules, string color) {
