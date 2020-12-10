@@ -43,6 +43,7 @@ namespace Aoc.Solutions {
                         yield return (items[i], items[j], items[k]);
                     }
         }
+
         public Day01() {
             Tests = new()
             {
