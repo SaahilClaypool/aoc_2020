@@ -42,19 +42,26 @@ namespace Extensions {
         public static Output Then<Input, Output>(this Input input, Func<Input, Output> f) => f(input);
 
         public static IEnumerable<IEnumerable<T>> Combinations<T>(this List<T> elements) {
-            return Enumerable.Range(0, elements.Count + 1).SelectMany(i => {
-                return Combinations(elements, i);
-            });
+            if (elements.Count == 0) {
+                yield return new List<T>();
+            }
+            else {
+                foreach (var combo in Combinations(elements.GetRange(1, elements.Count - 1))) {
+                    yield return combo;
+                    yield return combo.Concat(new List<T> { elements[0] });
+                }
+
+            }
         }
 
         // all combinations of k elements
-        public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> elements, int k) {
+        public static IEnumerable<IEnumerable<T>> Choose<T>(this IEnumerable<T> elements, int k) {
             if (k == 0) {
                 return new[] { Array.Empty<T>() };
             }
             return elements.SelectMany((e, i) =>
                 elements.Skip(i + 1) // skip over the ith element
-                    .Combinations(k - 1) // compute all combinations of the rest
+                    .Choose(k - 1) // compute all combinations of the rest
                     .Select(c => (new[] { e }).Concat(c))); // add this element to each combo
         }
 
