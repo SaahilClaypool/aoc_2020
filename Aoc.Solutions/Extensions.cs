@@ -32,7 +32,7 @@ namespace Extensions {
             var type = self.GetType();
 
             string representation = self is string @string ? @string : self.ToJson(pretty);
-            Console.WriteLine($"\nDBG: {fileName}:{lineNum} : {type} - {representation}\n");
+            Console.WriteLine($"DBG: {fileName}:{lineNum} : {type} - {representation}");
         }
 
         public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source) {
@@ -40,6 +40,20 @@ namespace Extensions {
         }
 
         public static Output Then<Input, Output>(this Input input, Func<Input, Output> f) => f(input);
+
+        public static IEnumerable<IEnumerable<T>> Combinations<T>(this List<T> elements) {
+            return Enumerable.Range(0, elements.Count + 1).SelectMany(i => {
+                return Combinations(elements, i);
+            });
+        }
+
+        public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> elements, int k) {
+            return k == 0 ? new[] { new T[0] } :
+              elements.SelectMany((e, i) =>
+                elements.Skip(i + 1)
+                    .Combinations(k - 1)
+                    .Select(c => (new[] { e }).Concat(c)));
+        }
 
         public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<T> items, Func<T, bool> splitter) {
             List<T> block = new();
