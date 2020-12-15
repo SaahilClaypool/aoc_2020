@@ -47,12 +47,15 @@ namespace Extensions {
             });
         }
 
+        // all combinations of k elements
         public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> elements, int k) {
-            return k == 0 ? new[] { new T[0] } :
-              elements.SelectMany((e, i) =>
-                elements.Skip(i + 1)
-                    .Combinations(k - 1)
-                    .Select(c => (new[] { e }).Concat(c)));
+            if (k == 0) {
+                return new[] { Array.Empty<T>() };
+            }
+            return elements.SelectMany((e, i) =>
+                elements.Skip(i + 1) // skip over the ith element
+                    .Combinations(k - 1) // compute all combinations of the rest
+                    .Select(c => (new[] { e }).Concat(c))); // add this element to each combo
         }
 
         public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<T> items, Func<T, bool> splitter) {
