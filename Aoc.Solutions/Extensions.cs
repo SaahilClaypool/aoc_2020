@@ -32,7 +32,8 @@ namespace Extensions {
             var type = self.GetType();
 
             string representation = self is string @string ? @string : self.ToJson(pretty);
-            Console.WriteLine($"DBG: {fileName}:{lineNum} : {type} - {representation}");
+            // Console.WriteLine($"DBG: {fileName}:{lineNum} : {type} - {representation}");
+            Console.WriteLine($"DBG: {representation}");
         }
 
         public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source) {
