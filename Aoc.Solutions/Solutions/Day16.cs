@@ -64,16 +64,28 @@ namespace Aoc.Solutions {
 
 
         static List<Rule> FindValidOrder(List<Rule> rules, List<Ticket> tickets) {
-            var validRules = new List<Rule>();
-            var permutations = rules.Permute().ToList();
-            foreach (var (permutatiton, idx) in permutations.WithIndex()) {
-                System.Console.WriteLine($"checking {idx} of {permutations.Count}");
-                if (tickets.All(ticket => ValidOrdered(ticket, permutatiton))) {
-                    validRules = permutatiton;
-                    break;
+            var viableRules = new List<List<Rule>>(); // viableRules rules for each spot
+
+            foreach (var i in Enumerable.Range(0, rules.Count)) {
+                var atPosition = tickets.Select(t => t[i]);
+                var viable = rules.Where(r => atPosition.All(f => Matches(f, r)));
+                viableRules.Add(viable.ToList());
+            }
+
+            var solvedBuckets = new List<List<Rule>>();
+
+            while (viableRules.Any(set => set.Count > 1)) {
+                var singleViable = viableRules.Find(p =>
+                    p.Count == 1 && !solvedBuckets.Contains(p))!;
+                solvedBuckets.Add(singleViable);
+                foreach (var otherPosition in viableRules) {
+                    if (otherPosition != singleViable) {
+                        otherPosition.Remove(singleViable[0]);
+                    }
                 }
             }
-            return validRules;
+
+            return viableRules.SelectMany(p => p).ToList();
         }
 
         static List<Ticket> ValidTickets(Input input) =>
@@ -83,12 +95,15 @@ namespace Aoc.Solutions {
             var input = ParseInput(inputString);
 
             var validOrder = FindValidOrder(input.Rules, ValidTickets(input));
-            var result =
-                validOrder
-                    .Select((r, i) => (r, i))
-                    .Where(r => r.r.Name.StartsWith("deparature"))
-                    .Select(r => input.MyTicket[r.i])
-                    .Aggregate(1, (state, n) => state * n);
+            validOrder.Select(r => r.Name).Dbg();
+            var result = 1L;
+            foreach (var (rule, idx) in validOrder.WithIndex()) {
+                if (rule.Name.StartsWith("departure")) {
+                    $"rule {rule.Name} at {idx}".Dbg();
+                    result *= input.MyTicket[idx];
+                }
+            }
+            input.MyTicket.Dbg();
             return result.ToString();
         }
         public Day16() {
