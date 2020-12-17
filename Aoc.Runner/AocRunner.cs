@@ -66,7 +66,6 @@ namespace Aoc.Runner
                 {
                     b = day.SolveB();
                 });
-                day.SolveB();
                 Console.WriteLine($"Part B ({elapsed.Milliseconds + elapsed.Seconds * 100}ms): {b}");
             }
             catch (NotImplementedException)

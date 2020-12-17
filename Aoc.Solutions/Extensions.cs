@@ -42,6 +42,23 @@ namespace Extensions {
 
         public static Output Then<Input, Output>(this Input input, Func<Input, Output> f) => f(input);
 
+        public static IEnumerable<List<T>> Permute<T>(this List<T> list) {
+            if (!list.Any()) {
+                yield return new List<T>();
+            }
+
+            foreach (var element in list) {
+                var withoutCurrent = new List<T>(list);
+                withoutCurrent.Remove(element);
+                var newList = new List<T> { element };
+                foreach (var mutation in withoutCurrent.Permute()) {
+                    newList.AddRange(mutation);
+                    yield return newList;
+                    newList = new List<T> { element };
+                }
+            }
+        }
+
         public static IEnumerable<IEnumerable<T>> Combinations<T>(this List<T> elements) {
             if (elements.Count == 0) {
                 yield return new List<T>();
