@@ -41,7 +41,6 @@ namespace Aoc.Solutions {
             return InvalidFields.Count != 0;
         }
 
-
         public override string SolveA(string inputString) {
             var input = ParseInput(inputString);
             var invalid = input.OtherTickets.SelectMany(ticket => {
@@ -52,16 +51,6 @@ namespace Aoc.Solutions {
             });
             return invalid.Sum().ToString();
         }
-
-        static bool ValidOrdered(Ticket ticket, List<Rule> rules) {
-            return ticket.Zip(rules).All(pair => {
-                var field = pair.First;
-                var rule = pair.Second;
-                var match = Matches(field, rule);
-                return match;
-            });
-        }
-
 
         static List<Rule> FindValidOrder(List<Rule> rules, List<Ticket> tickets) {
             var viableRules = new List<List<Rule>>(); // viableRules rules for each spot
@@ -106,6 +95,7 @@ namespace Aoc.Solutions {
             input.MyTicket.Dbg();
             return result.ToString();
         }
+
         public Day16() {
             Tests = new()
             {
@@ -128,7 +118,6 @@ namespace Aoc.Solutions {
                         return $"{@class}-{@seat}-{@row}";
                     }))
             };
-
         }
     }
 }
