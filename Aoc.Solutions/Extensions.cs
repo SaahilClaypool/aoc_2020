@@ -83,6 +83,19 @@ namespace Extensions {
                     .Select(c => (new[] { e }).Concat(c))); // add this element to each combo
         }
 
+        public static IEnumerable<int> Range(this ValueTuple<int, int> val, bool inclusive = false) {
+            var extend = inclusive ? 1 : 0;
+            foreach (var i in Enumerable.Range(val.Item1, val.Item2 - val.Item1 + extend)) {
+                yield return i;
+            }
+        }
+
+        public static IEnumerable<long> Range(this ValueTuple<long, long> val, bool inclusive = false) {
+            var extend = inclusive ? 1 : 0;
+            for (var i = val.Item1; i < val.Item2 + extend; i++) {
+                yield return i;
+            }
+        }
         public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<T> items, Func<T, bool> splitter) {
             List<T> block = new();
             foreach (var item in items) {

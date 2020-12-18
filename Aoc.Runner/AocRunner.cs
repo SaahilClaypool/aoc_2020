@@ -25,6 +25,7 @@ namespace Aoc.Runner
 
         public static bool TestDay(Day day)
         {
+            day.IsTest = true;
             Console.WriteLine($"Day {day.NumberString()}");
             var failedTests = day.Tests.Where(test =>
             {
