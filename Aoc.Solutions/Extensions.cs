@@ -15,7 +15,10 @@ namespace Extensions {
         /// <param name="pretty">print multi line json</param>
         /// <returns></returns>
         public static string ToJson(this object self, bool pretty = false) {
-            return JsonSerializer.Serialize(self, new JsonSerializerOptions { WriteIndented = pretty });
+            return JsonSerializer.Serialize(self, new JsonSerializerOptions {
+                WriteIndented = pretty,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            });
         }
 
         /// <summary>

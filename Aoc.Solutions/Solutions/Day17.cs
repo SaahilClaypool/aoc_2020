@@ -99,7 +99,6 @@ namespace Aoc.Solutions {
                     }
                 }
             }
-            world.Keys.Dbg();
             Show(world);
             return world;
         }
