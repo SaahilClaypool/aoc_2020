@@ -117,4 +117,29 @@ namespace Extensions {
         }
 
     }
+
+    public class DefaultDictionary<TKey, TValue> : Dictionary<TKey, TValue> where TValue : new() {
+        public DefaultDictionary() : base() {
+            DefaultGenerator = () => new TValue();
+        }
+        public DefaultDictionary(Func<TValue> defaultGenerator) : base() {
+            DefaultGenerator = defaultGenerator;
+        }
+        public DefaultDictionary(Dictionary<TKey, TValue> d) : base(d) {
+            DefaultGenerator = () => new TValue();
+        }
+        public new TValue this[TKey key] {
+            get {
+                TValue val;
+                if (!TryGetValue(key, out val)) {
+                    val = DefaultGenerator();
+                    Add(key, val);
+                }
+                return val;
+            }
+            set { base[key] = value; }
+        }
+
+        private Func<TValue> DefaultGenerator { get; }
+    }
 }

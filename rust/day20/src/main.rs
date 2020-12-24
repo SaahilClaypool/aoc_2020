@@ -17,8 +17,6 @@ fn part_a() {
     s.solve_puzzle();
 }
 
-fn dfs(mut tiles: Vec<Tile>) {}
-
 struct Solver {
     tiles: Vec<Tile>,
 }
@@ -45,74 +43,30 @@ impl Solver {
     }
 
     fn solve_puzzle(&self) {
-        let mut pieces: HashMap<i32, Tile> =
-            self.tiles.clone().into_iter().map(|t| (t.id, t)).collect();
-        let mut puzzle: HashMap<Loc, Tile> = HashMap::new();
-
-        let mut edges = pieces
+        let mut puzzle = HashMap::<Loc, Tile>::new();
+        let corners = self
+            .tiles
             .iter()
-            .filter(|(_k, t)| {
-                let matches = self.possible_matches(t);
-                matches.len() < 4
+            .filter(|tile| {
+                let matches = self.possible_matches(tile);
+                println!("matches: {}", &matches.len());
+                matches.len() == 2
             })
             .collect::<Vec<_>>();
+        let first_corner = *corners.first().unwrap();
+        puzzle.insert(Loc { row: 0, col: 0 }, first_corner.clone());
 
-        let (_, corner) = edges.pop().unwrap();
-        puzzle.insert(Loc { row: 0, col: 0 }, corner.clone());
-
-        while puzzle.values().len() < edges.len() {
-            for tile in 0..edges.len() {
-                let tile = edges[tile].1;
-                if puzzle.values().any(|v| v.id == tile.id) {
+        while puzzle.len() < self.tiles.len() {
+            for tile in self.tiles.iter() {
+                let matches = self.possible_matches(tile);
+                if puzzle.values().any(|placed| placed.id == tile.id) ||
+                    !puzzle.values().any(|tile| matches.contains(&tile)) {
                     continue;
                 }
-                let placed = puzzle.clone();
 
-                for placed in placed.values() {
-                    if let Some((rotation, side, other_side)) = tile.fit(placed) {
-                        let mut tile = (*tile).clone();
-                        tile.rotation = rotation;
-                        tile.loc = Self::place_location(&placed.loc, other_side);
-                        println!(
-                            "Fit {:?} side {:?} rotation {:?} with {:?} on its {:?} side --> {:?}",
-                            tile.id, side, rotation, placed.id, other_side, tile.loc
-                        );
-                        if puzzle.contains_key(&tile.loc) {
-                            dbg!(
-                                &placed.loc,
-                                other_side,
-                                tile.id,
-                                placed.id,
-                                &puzzle[&tile.loc].id,
-                                tile.rotation,
-                                placed.rotation,
-                                &puzzle[&tile.loc].rotation
-                            );
-                            panic!("Already a piece at this location");
-                        } else {
-                            println!(
-                                "Placing {:?} {:?} into {:?} next to {}",
-                                tile.id, tile.rotation, tile.loc, placed.id
-                            );
-                            puzzle.insert(tile.loc, tile);
-                            Self::show(&puzzle);
-                        }
-                    }
-                }
+                let matching_tile = puzzle.values().find(|tile| matches.contains(&tile)).unwrap();
             }
         }
-
-        dbg!(puzzle.values().count());
-
-        let mut centers = pieces
-            .iter()
-            .filter(|(_k, t)| {
-                let matches = self.possible_matches(t);
-                matches.len() == 4
-            })
-            .collect::<Vec<_>>();
-
-        dbg!(centers.len(), edges.len());
     }
 
     fn show(puzzle: &HashMap<Loc, Tile>) {
@@ -135,19 +89,19 @@ impl Solver {
 
     fn place_location(loc: &Loc, side: Rotation) -> Loc {
         match side {
-            Rotation::Left => Loc {
+            Rotation::Left | Rotation::FlipLeft => Loc {
                 row: loc.row,
                 col: loc.col - 1,
             },
-            Rotation::Right => Loc {
+            Rotation::Right | Rotation::FlipRight => Loc {
                 row: loc.row,
                 col: loc.col + 1,
             },
-            Rotation::Up => Loc {
+            Rotation::Up  | Rotation::FlipUp => Loc {
                 row: loc.row - 1,
                 col: loc.col,
             },
-            Rotation::Down => Loc {
+            Rotation::Down | Rotation::FlipDown => Loc {
                 row: loc.row + 1,
                 col: loc.col,
             },
@@ -174,6 +128,12 @@ enum Rotation {
     Right = 1,
     Down = 2,
     Left = 3,
+    // to flip a piece,
+    // invert top & bottom and do [top, right, left, bottom]
+    FlipUp = 4,
+    FlipRight = 5,
+    FlipDown = 6,
+    FlipLeft = 7,
 }
 
 impl Rotation {
@@ -183,7 +143,7 @@ impl Rotation {
         let other_number: usize = *other as usize;
         let this_number: usize = *self as usize;
 
-        ((6 + other_number - this_number) % 4).into()
+        ((6 + other_number - this_number) % 8).into()
     }
 }
 
@@ -197,13 +157,21 @@ impl From<usize> for Rotation {
             Rotation::Down
         } else if u == Rotation::Left as usize {
             Rotation::Left
+        } else if u == Rotation::FlipRight as usize {
+            Rotation::FlipRight
+        } else if u == Rotation::FlipLeft as usize {
+            Rotation::FlipLeft
+        } else if u == Rotation::FlipUp as usize {
+            Rotation::FlipUp
+        } else if u == Rotation::FlipDown as usize {
+            Rotation::FlipDown
         } else {
             panic!(format!("can't decode rotation {}", u));
         }
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 struct Tile {
     loc: Loc,
     id: i32,
@@ -232,7 +200,7 @@ impl Tile {
             return None;
         }
 
-        for r in 0..4 {
+        for r in 0..8 {
             let edges = self.edges_with_rotation(r.into());
             let others = other.edges();
             if all_eq(&edges[0], &others[2]) {
@@ -267,13 +235,24 @@ impl Tile {
 
     fn edges_with_rotation(&self, rotation: Rotation) -> Vec<Vec<char>> {
         let mut edges = self._edges.clone();
-        edges.rotate_right(rotation as usize);
-        vec![
-            edges.remove(0),
-            edges.remove(0),
-            Self::flip(edges.remove(0)),
-            Self::flip(edges.remove(0)),
-        ]
+        edges.rotate_right(rotation as usize % 4);
+
+        // flip piece over
+        if rotation as usize >= 4 {
+            vec![
+                Self::flip(edges[0].clone()),
+                Self::flip(edges[3].clone()),
+                edges[2].clone(),
+                edges[1].clone(),
+            ]
+        } else {
+            vec![
+                edges.remove(0),
+                edges.remove(0),
+                Self::flip(edges.remove(0)),
+                Self::flip(edges.remove(0)),
+            ]
+        }
     }
 
     fn cache_edges(&mut self) {
@@ -313,7 +292,6 @@ where
     T: Eq + PartialEq,
 {
     a.iter().zip(b).all(|(a, b)| a == b) && a.len() == b.len()
-        || a.iter().rev().zip(b).all(|(a, b)| a == b) && a.len() == b.len()
 }
 
 fn parse(f: &str) -> Vec<Tile> {
