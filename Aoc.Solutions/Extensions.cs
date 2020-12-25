@@ -7,6 +7,8 @@ using System.Text.Json.Serialization;
 
 namespace Extensions {
     public static class CommonExtensions {
+        public static IEnumerable<int> R(Range range) =>
+            Enumerable.Range(range.Start.Value, range.End.Value - range.Start.Value);
         /// <summary>
         /// Print any object using the system json
         /// NOTE: this might get caught in infinite loops (look how to fix...)
@@ -142,4 +144,5 @@ namespace Extensions {
 
         private Func<TValue> DefaultGenerator { get; }
     }
+
 }
